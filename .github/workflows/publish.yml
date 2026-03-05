@@ -1,0 +1,63 @@
+name: Publish to npm
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Get package version
+        id: package
+        run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
+      - name: Check if version exists on npm
+        id: check
+        run: |
+          NPM_VERSION=$(npm view devcontainer-builder version 2>/dev/null || echo "0.0.0")
+          LOCAL_VERSION=${{ steps.package.outputs.version }}
+          echo "npm_version=$NPM_VERSION" >> $GITHUB_OUTPUT
+          echo "local_version=$LOCAL_VERSION" >> $GITHUB_OUTPUT
+          if [ "$NPM_VERSION" = "$LOCAL_VERSION" ]; then
+            echo "should_publish=false" >> $GITHUB_OUTPUT
+          else
+            echo "should_publish=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Publish to npm
+        if: steps.check.outputs.should_publish == 'true'
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub Release
+        if: steps.check.outputs.should_publish == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const version = '${{ steps.package.outputs.version }}';
+            try {
+              await github.rest.repos.createRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag_name: `v${version}`,
+                name: `v${version}`,
+                body: `Release v${version}\n\nInstall: \`npx devcontainer-builder@${version}\``,
+                generate_release_notes: true
+              });
+            } catch (e) {
+              console.log('Release may already exist:', e.message);
+            }
+
+      - name: Skip publish (version unchanged)
+        if: steps.check.outputs.should_publish == 'false'
+        run: |
+          echo "Version ${{ steps.check.outputs.local_version }} already exists on npm. Skipping publish."
