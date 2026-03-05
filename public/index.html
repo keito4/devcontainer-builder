@@ -209,6 +209,23 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:
 @keyframes fadeInDown{from{opacity:0;transform:translateY(-20px);}to{opacity:1;transform:translateY(0);}}
 @keyframes fadeInUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
 @media(max-width:640px){.header h1{font-size:1.6rem;}.feature-grid{grid-template-columns:1fr;}.ext-grid{grid-template-columns:1fr;}.kv-row{flex-direction:column;gap:2px;}.kv-key{min-width:unset;}.toolbar{justify-content:center;}}
+
+/* File Selector */
+.file-selector{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:12px;padding:16px;margin-bottom:24px;}
+.file-selector-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.file-selector-title{font-size:.9rem;font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:8px;}
+.file-selector-title svg{width:16px;height:16px;color:var(--accent-cyan);}
+.file-selector-actions{display:flex;gap:6px;}
+.file-selector-btn{background:transparent;border:1px solid var(--border-primary);color:var(--text-muted);font-size:.72rem;padding:4px 10px;border-radius:6px;cursor:pointer;transition:all .2s;}
+.file-selector-btn:hover{border-color:var(--accent-blue);color:var(--accent-blue);}
+.file-list{display:flex;flex-wrap:wrap;gap:8px;}
+.file-item{display:flex;align-items:center;gap:8px;background:var(--bg-tertiary);border:1px solid var(--border-primary);border-radius:8px;padding:8px 14px;cursor:pointer;transition:all .2s;font-family:'JetBrains Mono',monospace;font-size:.78rem;}
+.file-item:hover{border-color:var(--accent-blue);background:var(--bg-card-hover);}
+.file-item.active{border-color:var(--accent-green);background:rgba(63,185,80,0.1);}
+.file-item .file-name{color:var(--text-primary);font-weight:500;}
+.file-item .file-path{color:var(--text-muted);font-size:.68rem;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.file-item .file-indicator{width:8px;height:8px;border-radius:50%;background:var(--accent-green);flex-shrink:0;}
+.file-count{font-size:.72rem;color:var(--text-muted);padding:4px 10px;background:var(--bg-tertiary);border-radius:6px;}
 </style>
 </head>
 <body>
@@ -220,6 +237,20 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:
     </div>
     <h1>DevContainer Builder</h1>
     <p>Visual Editor for Dev Container Configuration</p>
+  </div>
+
+  <div class="file-selector" id="fileSelector" style="display:none;">
+    <div class="file-selector-header">
+      <div class="file-selector-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        Configuration Files
+      </div>
+      <div class="file-selector-actions">
+        <span class="file-count" id="fileCount">0 files</span>
+        <button class="file-selector-btn" onclick="refreshFiles()">Refresh</button>
+      </div>
+    </div>
+    <div class="file-list" id="fileList"></div>
   </div>
 
   <div class="toolbar">
@@ -264,6 +295,80 @@ const ICONS = {
   user: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
 };
 
+// ===================== FILE MANAGEMENT =====================
+let fileList = [];
+let currentFileIndex = 0;
+
+async function loadFiles() {
+  try {
+    const res = await fetch('/api/files');
+    const result = await res.json();
+    fileList = result.files || [];
+    currentFileIndex = result.currentIndex || 0;
+    renderFileSelector();
+  } catch (e) {
+    console.error('Failed to load files:', e);
+  }
+}
+
+function renderFileSelector() {
+  const selector = document.getElementById('fileSelector');
+  const listEl = document.getElementById('fileList');
+  const countEl = document.getElementById('fileCount');
+
+  if (fileList.length <= 1) {
+    selector.style.display = 'none';
+    return;
+  }
+
+  selector.style.display = 'block';
+  countEl.textContent = `${fileList.length} files`;
+
+  listEl.innerHTML = fileList.map((f, i) => `
+    <div class="file-item ${f.current ? 'active' : ''}" onclick="selectFile(${f.index})">
+      ${f.current ? '<span class="file-indicator"></span>' : ''}
+      <div>
+        <div class="file-name">${f.name}</div>
+        <div class="file-path" title="${f.path}">${f.path}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function selectFile(index) {
+  if (index === currentFileIndex) return;
+  try {
+    const res = await fetch('/api/files/select', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ index })
+    });
+    const result = await res.json();
+    if (result.success) {
+      currentFileIndex = index;
+      fileList.forEach((f, i) => f.current = i === index);
+      parseConfig(result.config);
+      renderFileSelector();
+      renderAll();
+      showToast('Switched to ' + fileList[index].name);
+    }
+  } catch (e) {
+    showToast('Failed to switch file', true);
+  }
+}
+
+async function refreshFiles() {
+  try {
+    const res = await fetch('/api/files/refresh', { method: 'POST' });
+    const result = await res.json();
+    fileList = result.files || [];
+    renderFileSelector();
+    showToast('File list refreshed');
+  } catch (e) {
+    showToast('Failed to refresh', true);
+  }
+}
+
 // ===================== DATA MODEL =====================
 let data = {
   name: "Dev Container",
@@ -283,8 +388,20 @@ let data = {
 // ===================== API =====================
 async function loadConfig() {
   try {
-    const res = await fetch('/api/config');
-    const config = await res.json();
+    // Load both files list and config in parallel
+    const [filesRes, configRes] = await Promise.all([
+      fetch('/api/files'),
+      fetch('/api/config')
+    ]);
+    const filesData = await filesRes.json();
+    const config = await configRes.json();
+
+    // Update file list
+    fileList = filesData.files || [];
+    currentFileIndex = filesData.currentIndex || 0;
+    renderFileSelector();
+
+    // Update config
     parseConfig(config);
     renderAll();
   } catch (e) {

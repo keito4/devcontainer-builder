@@ -8,7 +8,7 @@ const args = process.argv.slice(2);
 
 // Parse arguments
 let port = 3000;
-let configPath = process.cwd();
+let searchPaths = [];
 
 for (let i = 0; i < args.length; i++) {
   if (args[i] === '--port' || args[i] === '-p') {
@@ -19,39 +19,37 @@ for (let i = 0; i < args.length; i++) {
 devcontainer-builder - Visual UI builder for devcontainer.json
 
 Usage:
-  npx devcontainer-builder [options]
+  npx devcontainer-builder [options] [directories...]
 
 Options:
   -p, --port <number>   Port to run the server on (default: 3000)
   -h, --help            Show this help message
 
+Arguments:
+  directories           One or more directories to scan for devcontainer.json files
+                        (default: current directory)
+
 Examples:
   npx devcontainer-builder
   npx devcontainer-builder --port 8080
+  npx devcontainer-builder ./project1 ./project2
+  npx devcontainer-builder ~/projects/*
 `);
     process.exit(0);
   } else if (!args[i].startsWith('-')) {
-    configPath = path.resolve(args[i]);
-  }
-}
-
-// Find devcontainer.json
-function findDevcontainerJson(startPath) {
-  const possiblePaths = [
-    path.join(startPath, '.devcontainer', 'devcontainer.json'),
-    path.join(startPath, '.devcontainer.json'),
-    path.join(startPath, 'devcontainer.json'),
-  ];
-
-  for (const p of possiblePaths) {
-    if (fs.existsSync(p)) {
-      return p;
+    const resolvedPath = path.resolve(args[i]);
+    if (fs.existsSync(resolvedPath)) {
+      searchPaths.push(resolvedPath);
+    } else {
+      console.warn(`  ⚠️  Path not found: ${args[i]}`);
     }
   }
-  return null;
 }
 
-const devcontainerPath = findDevcontainerJson(configPath);
+// Default to current directory if no paths specified
+if (searchPaths.length === 0) {
+  searchPaths.push(process.cwd());
+}
 
 console.log(`
   ╔═══════════════════════════════════════════════════════════╗
@@ -62,10 +60,6 @@ console.log(`
   ╚═══════════════════════════════════════════════════════════╝
 `);
 
-if (devcontainerPath) {
-  console.log(`  📁 Found: ${devcontainerPath}`);
-} else {
-  console.log(`  📁 No devcontainer.json found - starting with empty config`);
-}
+console.log(`  📂 Scanning ${searchPaths.length} director${searchPaths.length === 1 ? 'y' : 'ies'}...`);
 
-startServer(port, devcontainerPath);
+startServer(port, searchPaths);
