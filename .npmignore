@@ -1,0 +1,15 @@
+# Test files
+tests/
+playwright.config.js
+playwright-report/
+test-results/
+
+# Development files
+.git/
+.github/
+.vscode/
+
+# Build artifacts
+node_modules/
+*.log
+.DS_Store

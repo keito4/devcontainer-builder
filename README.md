@@ -72,10 +72,35 @@ The builder also exposes a simple HTTP API:
 git clone https://github.com/keito4/devcontainer-builder.git
 cd devcontainer-builder
 
+# Install dependencies
+npm install
+
 # Run locally
 node bin/cli.js
+```
+
+## Testing
+
+E2E tests are written with Playwright.
+
+```bash
+# Install Playwright browsers
+npx playwright install
+
+# Run tests
+npm test
+
+# Run tests with UI
+npm run test:ui
+
+# Run tests in headed mode
+npm run test:headed
 ```
 
 ## License
 
 MIT
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
