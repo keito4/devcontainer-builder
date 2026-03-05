@@ -15,25 +15,82 @@
   --json-key:#79c0ff;--json-string:#a5d6ff;--json-bool:#ff7b72;--json-bracket:#8b949e;
   --glow-blue:0 0 20px rgba(88,166,255,0.15);--glow-purple:0 0 20px rgba(188,140,255,0.15);--glow-edit:0 0 0 2px rgba(88,166,255,0.25);
 }
+[data-theme="light"] {
+  --bg-primary:#ffffff;--bg-secondary:#f6f8fa;--bg-tertiary:#f0f2f5;--bg-card:#ffffff;--bg-card-hover:#f6f8fa;--bg-input:#ffffff;
+  --border-primary:#d0d7de;--border-accent:#0969da40;--border-edit:#0969da;
+  --text-primary:#1f2328;--text-secondary:#656d76;--text-muted:#8c959f;
+  --accent-blue:#0969da;--accent-green:#1a7f37;--accent-purple:#8250df;--accent-orange:#9a6700;--accent-red:#cf222e;--accent-cyan:#1b7c83;--accent-pink:#bf3989;
+  --json-key:#0550ae;--json-string:#0a3069;--json-bool:#cf222e;--json-bracket:#656d76;
+  --glow-blue:0 0 20px rgba(9,105,218,0.1);--glow-purple:0 0 20px rgba(130,80,223,0.1);--glow-edit:0 0 0 2px rgba(9,105,218,0.2);
+}
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.6;min-height:100vh;overflow-x:hidden;}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.6;min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s;}
 body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse 80% 50% at 50% -20%,rgba(88,166,255,0.08),transparent),radial-gradient(ellipse 60% 40% at 80% 50%,rgba(188,140,255,0.05),transparent),radial-gradient(ellipse 60% 40% at 20% 80%,rgba(63,185,80,0.04),transparent);pointer-events:none;z-index:0;}
+[data-theme="light"] body::before{background:radial-gradient(ellipse 80% 50% at 50% -20%,rgba(9,105,218,0.05),transparent);}
 .container{max-width:1100px;margin:0 auto;padding:40px 24px 80px;position:relative;z-index:1;}
 
 /* Header */
-.header{text-align:center;margin-bottom:48px;animation:fadeInDown .6s ease-out;}
+.header{text-align:center;margin-bottom:32px;animation:fadeInDown .6s ease-out;}
 .header-badge{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,rgba(88,166,255,0.12),rgba(188,140,255,0.12));border:1px solid rgba(88,166,255,0.2);border-radius:24px;padding:6px 16px;font-size:12px;font-weight:600;color:var(--accent-blue);letter-spacing:.5px;text-transform:uppercase;margin-bottom:20px;}
 .header-badge svg{width:14px;height:14px;}
-.header h1{font-size:2.4rem;font-weight:800;background:linear-gradient(135deg,#e6edf3 0%,#58a6ff 50%,#bc8cff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:12px;letter-spacing:-.02em;}
+.header h1{font-size:2.4rem;font-weight:800;background:linear-gradient(135deg,var(--text-primary) 0%,var(--accent-blue) 50%,var(--accent-purple) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:12px;letter-spacing:-.02em;}
 .header p{color:var(--text-secondary);font-size:1.05rem;max-width:600px;margin:0 auto;}
 
+/* Theme Toggle */
+.theme-toggle{position:fixed;top:20px;right:20px;z-index:100;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:10px;padding:8px;cursor:pointer;transition:all .2s;}
+.theme-toggle:hover{border-color:var(--accent-blue);transform:scale(1.05);}
+.theme-toggle svg{width:20px;height:20px;color:var(--text-secondary);}
+
+/* File Selector */
+.file-selector{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:12px;padding:16px;margin-bottom:24px;display:none;}
+.file-selector.visible{display:block;}
+.file-selector-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.file-selector-title{font-size:.9rem;font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:8px;}
+.file-selector-title svg{width:16px;height:16px;color:var(--accent-cyan);}
+.file-selector-actions{display:flex;gap:6px;}
+.file-selector-btn{background:transparent;border:1px solid var(--border-primary);color:var(--text-muted);font-size:.72rem;padding:4px 10px;border-radius:6px;cursor:pointer;transition:all .2s;}
+.file-selector-btn:hover{border-color:var(--accent-blue);color:var(--accent-blue);}
+.file-list{display:flex;flex-wrap:wrap;gap:8px;}
+.file-item{display:flex;align-items:center;gap:8px;background:var(--bg-tertiary);border:1px solid var(--border-primary);border-radius:8px;padding:8px 14px;cursor:pointer;transition:all .2s;font-family:'JetBrains Mono',monospace;font-size:.78rem;}
+.file-item:hover{border-color:var(--accent-blue);background:var(--bg-card-hover);}
+.file-item.active{border-color:var(--accent-green);background:rgba(63,185,80,0.1);}
+.file-item .file-name{color:var(--text-primary);font-weight:500;}
+.file-item .file-path{color:var(--text-muted);font-size:.68rem;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.file-item .file-indicator{width:8px;height:8px;border-radius:50%;background:var(--accent-green);flex-shrink:0;}
+.file-count{font-size:.72rem;color:var(--text-muted);padding:4px 10px;background:var(--bg-tertiary);border-radius:6px;}
+
+/* Validation Banner */
+.validation-banner{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:12px;padding:14px 18px;margin-bottom:24px;display:none;}
+.validation-banner.visible{display:block;}
+.validation-banner.valid{border-color:var(--accent-green);background:rgba(63,185,80,0.05);}
+.validation-banner.invalid{border-color:var(--accent-red);background:rgba(248,81,73,0.05);}
+.validation-banner.warning{border-color:var(--accent-orange);background:rgba(210,153,34,0.05);}
+.validation-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.validation-icon{width:20px;height:20px;}
+.validation-title{font-weight:600;font-size:.9rem;}
+.validation-list{font-size:.82rem;color:var(--text-secondary);}
+.validation-list li{margin:4px 0;padding-left:8px;}
+
 /* Toolbar */
-.toolbar{display:flex;justify-content:flex-end;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.toolbar{display:flex;justify-content:space-between;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.toolbar-left,.toolbar-right{display:flex;gap:8px;flex-wrap:wrap;}
 .toolbar-btn{background:var(--bg-card);border:1px solid var(--border-primary);color:var(--text-secondary);font-family:'JetBrains Mono',monospace;font-size:.78rem;padding:6px 14px;border-radius:8px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px;}
 .toolbar-btn:hover{background:var(--bg-card-hover);border-color:var(--accent-blue);color:var(--accent-blue);}
 .toolbar-btn.active{background:rgba(88,166,255,0.1);border-color:var(--accent-blue);color:var(--accent-blue);}
-.toolbar-btn.export-btn:hover{border-color:var(--accent-green);color:var(--accent-green);}
-.toolbar-btn.save-btn:hover{border-color:var(--accent-purple);color:var(--accent-purple);}
+.toolbar-btn.primary{background:var(--accent-blue);border-color:var(--accent-blue);color:#fff;}
+.toolbar-btn.primary:hover{background:#4a9aef;}
+.toolbar-btn:disabled{opacity:.5;cursor:not-allowed;}
+
+/* Quick Actions */
+.quick-actions{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap;}
+.quick-action{flex:1;min-width:200px;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:12px;padding:16px;cursor:pointer;transition:all .25s;text-align:center;}
+.quick-action:hover{background:var(--bg-card-hover);border-color:var(--accent-blue);transform:translateY(-2px);}
+.quick-action-icon{width:40px;height:40px;margin:0 auto 10px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;}
+.quick-action:nth-child(1) .quick-action-icon{background:rgba(188,140,255,0.12);color:var(--accent-purple);}
+.quick-action:nth-child(2) .quick-action-icon{background:rgba(57,210,192,0.12);color:var(--accent-cyan);}
+.quick-action:nth-child(3) .quick-action-icon{background:rgba(63,185,80,0.12);color:var(--accent-green);}
+.quick-action-title{font-size:.9rem;font-weight:600;color:var(--text-primary);margin-bottom:4px;}
+.quick-action-desc{font-size:.75rem;color:var(--text-muted);}
 
 /* Toast */
 .toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--bg-card);border:1px solid var(--accent-green);color:var(--accent-green);padding:10px 24px;border-radius:10px;font-size:.85rem;font-weight:600;z-index:1000;opacity:0;transition:all .35s;pointer-events:none;box-shadow:0 8px 32px rgba(0,0,0,0.4);display:flex;align-items:center;gap:8px;}
@@ -53,8 +110,17 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:
 .section-icon.pink{background:rgba(247,120,186,0.12);color:var(--accent-pink);}
 .section-icon.red{background:rgba(248,81,73,0.12);color:var(--accent-red);}
 .section-icon.gray{background:rgba(139,148,158,0.12);color:var(--text-secondary);}
-.section-title{font-size:1.15rem;font-weight:700;color:var(--text-primary);}
+.section-title-wrap{flex:1;}
+.section-title{font-size:1.15rem;font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:8px;}
 .section-subtitle{font-size:.8rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;}
+.help-icon{width:16px;height:16px;color:var(--text-muted);cursor:help;opacity:.6;transition:opacity .2s;}
+.help-icon:hover{opacity:1;color:var(--accent-blue);}
+
+/* Tooltip */
+.tooltip{position:relative;}
+.tooltip-content{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--bg-secondary);border:1px solid var(--border-primary);border-radius:8px;padding:10px 14px;font-size:.78rem;color:var(--text-secondary);white-space:nowrap;z-index:100;opacity:0;visibility:hidden;transition:all .2s;box-shadow:0 4px 16px rgba(0,0,0,0.3);}
+.tooltip:hover .tooltip-content{opacity:1;visibility:visible;}
+.tooltip-content::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--border-primary);}
 
 /* Card */
 .card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:12px;padding:20px;transition:all .25s;}
@@ -63,7 +129,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:
 /* KV rows */
 .kv-row{display:flex;align-items:baseline;padding:10px 0;border-bottom:1px solid rgba(48,54,61,0.5);}
 .kv-row:last-child{border-bottom:none;}
-.kv-key{font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:600;color:var(--json-key);min-width:200px;flex-shrink:0;}
+.kv-key{font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:600;color:var(--json-key);min-width:200px;flex-shrink:0;display:flex;align-items:center;gap:6px;}
 .kv-value{font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--json-string);word-break:break-all;flex:1;}
 
 /* Editable */
@@ -121,9 +187,10 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:
 .input-field{background:var(--bg-input);border:1px solid var(--border-primary);border-radius:8px;color:var(--text-primary);font-family:'JetBrains Mono',monospace;font-size:.82rem;padding:6px 10px;outline:none;transition:border-color .2s;width:100%;}
 .input-field:focus{border-color:var(--accent-blue);box-shadow:var(--glow-edit);}
 
-/* Select field */
-.select-field{background:var(--bg-input);border:1px solid var(--border-primary);border-radius:8px;color:var(--text-primary);font-family:'JetBrains Mono',monospace;font-size:.82rem;padding:6px 10px;outline:none;transition:border-color .2s;cursor:pointer;-webkit-appearance:none;}
-.select-field:focus{border-color:var(--accent-blue);box-shadow:var(--glow-edit);}
+/* Search input */
+.search-input{background:var(--bg-input);border:1px solid var(--border-primary);border-radius:8px;color:var(--text-primary);font-family:'Inter',sans-serif;font-size:.9rem;padding:10px 14px;outline:none;transition:border-color .2s;width:100%;}
+.search-input:focus{border-color:var(--accent-blue);box-shadow:var(--glow-edit);}
+.search-input::placeholder{color:var(--text-muted);}
 
 /* Command block */
 .command-block{background:var(--bg-tertiary);border:1px solid var(--border-primary);border-radius:10px;padding:16px 20px;font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--accent-green);position:relative;overflow-x:auto;line-height:1.8;}
@@ -159,11 +226,11 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:
 /* Modal */
 .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:999;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
 .modal-overlay.show{display:flex;}
-.modal{background:var(--bg-secondary);border:1px solid var(--border-primary);border-radius:16px;padding:28px;width:90%;max-width:520px;box-shadow:0 24px 64px rgba(0,0,0,0.5);}
-.modal h3{font-size:1.1rem;margin-bottom:20px;color:var(--text-primary);}
+.modal{background:var(--bg-secondary);border:1px solid var(--border-primary);border-radius:16px;padding:28px;width:90%;max-width:600px;max-height:80vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,0.5);}
+.modal h3{font-size:1.2rem;margin-bottom:20px;color:var(--text-primary);display:flex;align-items:center;gap:10px;}
 .modal-field{margin-bottom:14px;}
 .modal-field label{display:block;font-size:.78rem;font-weight:600;color:var(--text-secondary);margin-bottom:5px;font-family:'JetBrains Mono',monospace;}
-.modal-field input,.modal-field select{width:100%;padding:8px 12px;background:var(--bg-input);border:1px solid var(--border-primary);border-radius:8px;color:var(--text-primary);font-family:'JetBrains Mono',monospace;font-size:.85rem;outline:none;transition:border-color .2s;}
+.modal-field input,.modal-field select{width:100%;padding:10px 14px;background:var(--bg-input);border:1px solid var(--border-primary);border-radius:8px;color:var(--text-primary);font-family:'JetBrains Mono',monospace;font-size:.85rem;outline:none;transition:border-color .2s;}
 .modal-field input:focus,.modal-field select:focus{border-color:var(--accent-blue);box-shadow:var(--glow-edit);}
 .modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:20px;}
 .modal-btn{padding:8px 20px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;border:1px solid var(--border-primary);font-family:'Inter',sans-serif;}
@@ -171,6 +238,26 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:
 .modal-btn.cancel:hover{background:var(--bg-card);}
 .modal-btn.confirm{background:var(--accent-blue);border-color:var(--accent-blue);color:#fff;}
 .modal-btn.confirm:hover{background:#4a9aef;}
+
+/* Search results in modal */
+.search-results{max-height:300px;overflow-y:auto;margin-top:16px;}
+.search-result-item{display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:all .2s;}
+.search-result-item:hover{background:var(--bg-card-hover);border-color:var(--accent-blue);}
+.search-result-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;background:rgba(88,166,255,0.12);color:var(--accent-blue);flex-shrink:0;}
+.search-result-info{flex:1;min-width:0;}
+.search-result-name{font-weight:600;font-size:.9rem;color:var(--text-primary);}
+.search-result-desc{font-size:.75rem;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.search-result-meta{font-size:.7rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;margin-top:2px;}
+.search-loading{text-align:center;padding:20px;color:var(--text-muted);}
+.search-empty{text-align:center;padding:20px;color:var(--text-muted);font-style:italic;}
+
+/* Template grid */
+.template-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:16px;}
+.template-card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:12px;padding:16px;cursor:pointer;transition:all .25s;text-align:center;}
+.template-card:hover{background:var(--bg-card-hover);border-color:var(--accent-blue);transform:translateY(-2px);}
+.template-icon{width:48px;height:48px;margin:0 auto 12px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;background:linear-gradient(135deg,rgba(88,166,255,0.15),rgba(188,140,255,0.15));color:var(--accent-blue);}
+.template-name{font-weight:600;font-size:.9rem;color:var(--text-primary);margin-bottom:4px;}
+.template-desc{font-size:.72rem;color:var(--text-muted);}
 
 /* Footer */
 .footer{text-align:center;margin-top:60px;padding-top:24px;border-top:1px solid var(--border-primary);color:var(--text-muted);font-size:.78rem;}
@@ -206,29 +293,22 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:
 .setting-val.bool-true{color:var(--accent-green);}
 .setting-val.string{color:var(--json-string);}
 
+/* Dockerfile section */
+.dockerfile-section{background:var(--bg-tertiary);border:1px solid var(--border-primary);border-radius:12px;padding:20px;margin-top:16px;}
+.dockerfile-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.dockerfile-title{font-size:.9rem;font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:8px;}
+.dockerfile-content{font-family:'JetBrains Mono',monospace;font-size:.8rem;background:var(--bg-input);border:1px solid var(--border-primary);border-radius:8px;padding:16px;white-space:pre-wrap;color:var(--text-secondary);max-height:300px;overflow-y:auto;}
+
 @keyframes fadeInDown{from{opacity:0;transform:translateY(-20px);}to{opacity:1;transform:translateY(0);}}
 @keyframes fadeInUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
-@media(max-width:640px){.header h1{font-size:1.6rem;}.feature-grid{grid-template-columns:1fr;}.ext-grid{grid-template-columns:1fr;}.kv-row{flex-direction:column;gap:2px;}.kv-key{min-width:unset;}.toolbar{justify-content:center;}}
-
-/* File Selector */
-.file-selector{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:12px;padding:16px;margin-bottom:24px;}
-.file-selector-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-.file-selector-title{font-size:.9rem;font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:8px;}
-.file-selector-title svg{width:16px;height:16px;color:var(--accent-cyan);}
-.file-selector-actions{display:flex;gap:6px;}
-.file-selector-btn{background:transparent;border:1px solid var(--border-primary);color:var(--text-muted);font-size:.72rem;padding:4px 10px;border-radius:6px;cursor:pointer;transition:all .2s;}
-.file-selector-btn:hover{border-color:var(--accent-blue);color:var(--accent-blue);}
-.file-list{display:flex;flex-wrap:wrap;gap:8px;}
-.file-item{display:flex;align-items:center;gap:8px;background:var(--bg-tertiary);border:1px solid var(--border-primary);border-radius:8px;padding:8px 14px;cursor:pointer;transition:all .2s;font-family:'JetBrains Mono',monospace;font-size:.78rem;}
-.file-item:hover{border-color:var(--accent-blue);background:var(--bg-card-hover);}
-.file-item.active{border-color:var(--accent-green);background:rgba(63,185,80,0.1);}
-.file-item .file-name{color:var(--text-primary);font-weight:500;}
-.file-item .file-path{color:var(--text-muted);font-size:.68rem;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.file-item .file-indicator{width:8px;height:8px;border-radius:50%;background:var(--accent-green);flex-shrink:0;}
-.file-count{font-size:.72rem;color:var(--text-muted);padding:4px 10px;background:var(--bg-tertiary);border-radius:6px;}
+@media(max-width:640px){.header h1{font-size:1.6rem;}.feature-grid{grid-template-columns:1fr;}.ext-grid{grid-template-columns:1fr;}.kv-row{flex-direction:column;gap:2px;}.kv-key{min-width:unset;}.toolbar{flex-direction:column;}.toolbar-left,.toolbar-right{width:100%;}.quick-actions{flex-direction:column;}.quick-action{min-width:100%;}}
 </style>
 </head>
 <body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+  <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+
 <div class="container">
   <div class="header">
     <div class="header-badge">
@@ -239,7 +319,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:
     <p>Visual Editor for Dev Container Configuration</p>
   </div>
 
-  <div class="file-selector" id="fileSelector" style="display:none;">
+  <div class="file-selector" id="fileSelector">
     <div class="file-selector-header">
       <div class="file-selector-title">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
@@ -253,26 +333,60 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:
     <div class="file-list" id="fileList"></div>
   </div>
 
+  <div class="validation-banner" id="validationBanner">
+    <div class="validation-header">
+      <svg class="validation-icon" id="validationIcon" viewBox="0 0 24 24" fill="currentColor"></svg>
+      <span class="validation-title" id="validationTitle">Validation</span>
+    </div>
+    <ul class="validation-list" id="validationList"></ul>
+  </div>
+
+  <div class="quick-actions">
+    <div class="quick-action" onclick="openModal('templates')">
+      <div class="quick-action-icon">T</div>
+      <div class="quick-action-title">Templates</div>
+      <div class="quick-action-desc">Start with a pre-built config</div>
+    </div>
+    <div class="quick-action" onclick="openModal('featureSearch')">
+      <div class="quick-action-icon">F</div>
+      <div class="quick-action-title">Browse Features</div>
+      <div class="quick-action-desc">Add dev container features</div>
+    </div>
+    <div class="quick-action" onclick="openModal('extensionSearch')">
+      <div class="quick-action-icon">E</div>
+      <div class="quick-action-title">Find Extensions</div>
+      <div class="quick-action-desc">Search VS Code marketplace</div>
+    </div>
+  </div>
+
   <div class="toolbar">
-    <button class="toolbar-btn" onclick="toggleRaw()" id="rawToggle">
-      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M4.72 3.22a.75.75 0 0 1 1.06 1.06L2.06 8l3.72 3.72a.75.75 0 1 1-1.06 1.06L.47 8.53a.75.75 0 0 1 0-1.06l4.25-4.25Zm6.56 0a.75.75 0 1 0-1.06 1.06L13.94 8l-3.72 3.72a.75.75 0 1 0 1.06 1.06l4.25-4.25a.75.75 0 0 0 0-1.06l-4.25-4.25Z"/></svg>
-      Raw JSON
-    </button>
-    <button class="toolbar-btn save-btn" onclick="saveToFile()">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-      Save to File
-    </button>
-    <button class="toolbar-btn export-btn" onclick="exportJSON()">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      Download JSON
-    </button>
+    <div class="toolbar-left">
+      <button class="toolbar-btn" onclick="undo()" id="undoBtn" disabled title="Undo last change">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
+        Undo
+      </button>
+      <button class="toolbar-btn" onclick="toggleRaw()" id="rawToggle">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M4.72 3.22a.75.75 0 0 1 1.06 1.06L2.06 8l3.72 3.72a.75.75 0 1 1-1.06 1.06L.47 8.53a.75.75 0 0 1 0-1.06l4.25-4.25Zm6.56 0a.75.75 0 1 0-1.06 1.06L13.94 8l-3.72 3.72a.75.75 0 1 0 1.06 1.06l4.25-4.25a.75.75 0 0 0 0-1.06l-4.25-4.25Z"/></svg>
+        JSON
+      </button>
+    </div>
+    <div class="toolbar-right">
+      <button class="toolbar-btn" onclick="exportJSON()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download
+      </button>
+      <button class="toolbar-btn primary" onclick="saveToFile()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Save
+      </button>
+    </div>
   </div>
   <div class="raw-json" id="rawJson"></div>
 
   <div id="app">Loading...</div>
 
   <div class="footer">
-    <p>DevContainer Builder - <a href="https://containers.dev/implementors/json_reference/" target="_blank">Dev Container Specification</a></p>
+    <p>DevContainer Builder v1.2.0 - <a href="https://containers.dev/implementors/json_reference/" target="_blank">Dev Container Specification</a></p>
   </div>
 </div>
 
@@ -293,38 +407,81 @@ const ICONS = {
   mount: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>`,
   network: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>`,
   user: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+  docker: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.186m0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.083.185.185.186m-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.184-.186h-2.12a.186.186 0 00-.186.186v1.887c0 .102.084.185.186.185m-2.92 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.082.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338.001-.676.03-1.01.087-.248-1.7-1.653-2.53-1.716-2.566l-.344-.199-.226.327c-.284.438-.49.922-.612 1.43-.23.97-.09 1.882.403 2.661-.595.332-1.55.413-1.744.42H.751a.751.751 0 00-.75.748 11.376 11.376 0 00.692 4.062c.545 1.428 1.355 2.48 2.41 3.124 1.18.723 3.1 1.137 5.275 1.137.983.003 1.963-.086 2.93-.266a12.248 12.248 0 003.823-1.389c.98-.567 1.86-1.288 2.61-2.136 1.252-1.418 1.998-2.997 2.553-4.4h.221c1.372 0 2.215-.549 2.68-1.009.309-.293.55-.65.707-1.046l.098-.288Z"/></svg>`,
+  help: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
 };
 
-// ===================== FILE MANAGEMENT =====================
+const HELP_TEXTS = {
+  name: 'Display name shown in VS Code when connecting to the container',
+  image: 'Docker image to use. Use mcr.microsoft.com/devcontainers/* for official images',
+  features: 'Add tools and runtimes. Browse popular features or enter custom URLs',
+  forwardPorts: 'Ports automatically forwarded when the container starts',
+  postCreateCommand: 'Command run once after the container is created (e.g., npm install)',
+  postStartCommand: 'Command run every time the container starts',
+  remoteUser: 'User VS Code runs as inside the container (usually "vscode" or "root")',
+  containerEnv: 'Environment variables set when the container is created',
+  remoteEnv: 'Environment variables for VS Code terminals and tools',
+  mounts: 'Bind mounts for persistent data or accessing host files',
+  extensions: 'VS Code extensions to install automatically',
+  settings: 'VS Code settings applied inside the container',
+};
+
+// ===================== STATE =====================
 let fileList = [];
 let currentFileIndex = 0;
+let schema = {};
+let historyCount = 0;
+let dockerfileInfo = null;
 
-async function loadFiles() {
-  try {
-    const res = await fetch('/api/files');
-    const result = await res.json();
-    fileList = result.files || [];
-    currentFileIndex = result.currentIndex || 0;
-    renderFileSelector();
-  } catch (e) {
-    console.error('Failed to load files:', e);
+let data = {
+  name: "Dev Container",
+  image: "mcr.microsoft.com/devcontainers/base:ubuntu",
+  features: [],
+  extensions: [],
+  settings: [],
+  containerEnv: [],
+  remoteEnv: [],
+  forwardPorts: [],
+  mounts: [],
+  postCreateCommand: "",
+  postStartCommand: "",
+  remoteUser: "vscode",
+};
+
+// ===================== THEME =====================
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  updateThemeIcon();
+}
+
+function updateThemeIcon() {
+  const theme = document.documentElement.getAttribute('data-theme');
+  const icon = document.getElementById('themeIcon');
+  if (theme === 'light') {
+    icon.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+  } else {
+    icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
   }
 }
 
+// ===================== FILE MANAGEMENT =====================
 function renderFileSelector() {
   const selector = document.getElementById('fileSelector');
   const listEl = document.getElementById('fileList');
   const countEl = document.getElementById('fileCount');
 
   if (fileList.length <= 1) {
-    selector.style.display = 'none';
+    selector.classList.remove('visible');
     return;
   }
 
-  selector.style.display = 'block';
+  selector.classList.add('visible');
   countEl.textContent = `${fileList.length} files`;
 
-  listEl.innerHTML = fileList.map((f, i) => `
+  listEl.innerHTML = fileList.map((f) => `
     <div class="file-item ${f.current ? 'active' : ''}" onclick="selectFile(${f.index})">
       ${f.current ? '<span class="file-indicator"></span>' : ''}
       <div>
@@ -350,6 +507,7 @@ async function selectFile(index) {
       parseConfig(result.config);
       renderFileSelector();
       renderAll();
+      validateConfig();
       showToast('Switched to ' + fileList[index].name);
     }
   } catch (e) {
@@ -369,41 +527,30 @@ async function refreshFiles() {
   }
 }
 
-// ===================== DATA MODEL =====================
-let data = {
-  name: "Dev Container",
-  image: "mcr.microsoft.com/devcontainers/base:ubuntu",
-  features: [],
-  extensions: [],
-  settings: [],
-  containerEnv: [],
-  remoteEnv: [],
-  forwardPorts: [],
-  mounts: [],
-  postCreateCommand: "",
-  postStartCommand: "",
-  remoteUser: "vscode",
-};
-
 // ===================== API =====================
 async function loadConfig() {
   try {
-    // Load both files list and config in parallel
-    const [filesRes, configRes] = await Promise.all([
+    const [filesRes, configRes, schemaRes, historyRes] = await Promise.all([
       fetch('/api/files'),
-      fetch('/api/config')
+      fetch('/api/config'),
+      fetch('/api/schema'),
+      fetch('/api/history')
     ]);
     const filesData = await filesRes.json();
     const config = await configRes.json();
+    schema = await schemaRes.json();
+    const historyData = await historyRes.json();
 
-    // Update file list
     fileList = filesData.files || [];
     currentFileIndex = filesData.currentIndex || 0;
-    renderFileSelector();
+    historyCount = historyData.count || 0;
+    dockerfileInfo = config._meta || null;
 
-    // Update config
+    renderFileSelector();
     parseConfig(config);
     renderAll();
+    validateConfig();
+    updateUndoButton();
   } catch (e) {
     console.error('Failed to load config:', e);
     renderAll();
@@ -414,7 +561,6 @@ function parseConfig(config) {
   data.name = config.name || "Dev Container";
   data.image = config.image || "";
 
-  // Parse features
   data.features = [];
   if (config.features) {
     for (const [source, options] of Object.entries(config.features)) {
@@ -423,7 +569,6 @@ function parseConfig(config) {
     }
   }
 
-  // Parse customizations
   data.extensions = [];
   data.settings = [];
   if (config.customizations?.vscode) {
@@ -442,7 +587,6 @@ function parseConfig(config) {
     }
   }
 
-  // Parse env
   data.containerEnv = [];
   if (config.containerEnv) {
     for (const [key, value] of Object.entries(config.containerEnv)) {
@@ -457,10 +601,8 @@ function parseConfig(config) {
     }
   }
 
-  // Parse ports
   data.forwardPorts = config.forwardPorts || [];
 
-  // Parse mounts
   data.mounts = [];
   if (config.mounts) {
     config.mounts.forEach(m => {
@@ -477,10 +619,63 @@ function parseConfig(config) {
     });
   }
 
-  // Commands
   data.postCreateCommand = config.postCreateCommand || "";
   data.postStartCommand = config.postStartCommand || "";
   data.remoteUser = config.remoteUser || "vscode";
+}
+
+async function validateConfig() {
+  try {
+    const json = buildJSON();
+    const res = await fetch('/api/validate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(json)
+    });
+    const result = await res.json();
+    renderValidation(result);
+  } catch (e) {
+    console.error('Validation failed:', e);
+  }
+}
+
+function renderValidation(result) {
+  const banner = document.getElementById('validationBanner');
+  const icon = document.getElementById('validationIcon');
+  const title = document.getElementById('validationTitle');
+  const list = document.getElementById('validationList');
+
+  const allIssues = [...result.errors, ...result.warnings, ...result.suggestions];
+
+  if (allIssues.length === 0) {
+    banner.classList.remove('visible');
+    return;
+  }
+
+  banner.classList.add('visible');
+  banner.classList.remove('valid', 'invalid', 'warning');
+
+  if (result.errors.length > 0) {
+    banner.classList.add('invalid');
+    icon.innerHTML = '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>';
+    icon.style.color = 'var(--accent-red)';
+    title.textContent = `${result.errors.length} Error(s)`;
+    title.style.color = 'var(--accent-red)';
+  } else if (result.warnings.length > 0) {
+    banner.classList.add('warning');
+    icon.innerHTML = '<path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>';
+    icon.style.color = 'var(--accent-orange)';
+    title.textContent = `${result.warnings.length} Warning(s)`;
+    title.style.color = 'var(--accent-orange)';
+  } else {
+    banner.classList.add('valid');
+    icon.innerHTML = '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>';
+    icon.style.color = 'var(--accent-blue)';
+    title.textContent = `${result.suggestions.length} Suggestion(s)`;
+    title.style.color = 'var(--accent-blue)';
+  }
+
+  list.innerHTML = allIssues.map(i => `<li><strong>${i.field}:</strong> ${i.message}</li>`).join('');
 }
 
 async function saveToFile() {
@@ -502,12 +697,45 @@ async function saveToFile() {
   }
 }
 
+async function undo() {
+  try {
+    const res = await fetch('/api/undo', { method: 'POST' });
+    const result = await res.json();
+    if (result.success) {
+      parseConfig(result.config);
+      renderAll();
+      validateConfig();
+      historyCount = Math.max(0, historyCount - 1);
+      updateUndoButton();
+      showToast('Undone');
+    } else {
+      showToast('Nothing to undo', true);
+    }
+  } catch (e) {
+    showToast('Undo failed', true);
+  }
+}
+
+function updateUndoButton() {
+  const btn = document.getElementById('undoBtn');
+  btn.disabled = historyCount === 0;
+}
+
 // ===================== SECTION BUILDER =====================
-function sec(icon, color, title, subtitle, bodyHtml, extra) {
+function helpIcon(key) {
+  const text = HELP_TEXTS[key] || schema.help?.[key] || '';
+  if (!text) return '';
+  return `<span class="tooltip"><svg class="help-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span class="tooltip-content">${text}</span></span>`;
+}
+
+function sec(icon, color, title, subtitle, bodyHtml, extra, helpKey) {
   return `<div class="section">
     <div class="section-header">
       <div class="section-icon ${color}">${ICONS[icon]||ICONS.server}</div>
-      <div><div class="section-title">${title}</div><div class="section-subtitle">${subtitle}</div></div>
+      <div class="section-title-wrap">
+        <div class="section-title">${title}${helpKey ? helpIcon(helpKey) : ''}</div>
+        <div class="section-subtitle">${subtitle}</div>
+      </div>
     </div>${bodyHtml}${extra||''}</div>`;
 }
 
@@ -524,20 +752,19 @@ function renderAll() {
     renderUserConfig(),
     renderPorts(),
     renderMounts(),
+    dockerfileInfo?.hasDockerfile ? renderDockerfile() : '',
   ].join('');
   bindEvents();
 }
 
-// ---- Base Image ----
 function renderBaseImage() {
   return sec('server','blue','Base Image','Container Image',`
     <div class="card">
-      <div class="kv-row"><span class="kv-key">"name"</span><span class="kv-value"><span class="editable" contenteditable="true" data-path="name" spellcheck="false">${data.name}</span></span></div>
-      <div class="kv-row"><span class="kv-key">"image"</span><span class="kv-value"><span class="editable" contenteditable="true" data-path="image" spellcheck="false">${data.image}</span></span></div>
+      <div class="kv-row"><span class="kv-key">"name"${helpIcon('name')}</span><span class="kv-value"><span class="editable" contenteditable="true" data-path="name" spellcheck="false">${data.name}</span></span></div>
+      <div class="kv-row"><span class="kv-key">"image"${helpIcon('image')}</span><span class="kv-value"><span class="editable" contenteditable="true" data-path="image" spellcheck="false">${data.image}</span></span></div>
     </div>`);
 }
 
-// ---- Features ----
 function renderFeatures() {
   const cards = data.features.map((f,i) => {
     const opts = Object.keys(f.options).length > 0
@@ -553,24 +780,22 @@ function renderFeatures() {
   }).join('');
   return sec('star','purple','Features',`Dev Container Features (${data.features.length})`,
     `<div class="feature-grid">${cards}</div>`,
-    `<button class="add-btn" onclick="openModal('feature')">+ Add Feature</button>`);
+    `<button class="add-btn" onclick="openModal('featureSearch')">+ Browse Features</button>`, 'features');
 }
 
-// ---- Lifecycle ----
 function renderLifecycle() {
   const cmds = [
-    ['postCreateCommand','Runs after container creation'],
-    ['postStartCommand','Runs on container start'],
+    ['postCreateCommand','Runs after container creation','postCreateCommand'],
+    ['postStartCommand','Runs on container start','postStartCommand'],
   ];
-  const body = cmds.map(([key,desc]) => `
+  const body = cmds.map(([key,desc,helpKey]) => `
     <div style="margin-bottom:14px;">
-      <div class="sub-label">${key} <span>- ${desc}</span></div>
+      <div class="sub-label">${key} ${helpIcon(helpKey)}<span>- ${desc}</span></div>
       <div class="command-block"><textarea class="command-editable" data-cmd="${key}" spellcheck="false" placeholder="Enter command...">${data[key]||''}</textarea></div>
     </div>`).join('');
   return sec('terminal','green','Lifecycle Commands','Commands to run at different stages', body);
 }
 
-// ---- Extensions ----
 function renderExtensions() {
   const items = data.extensions.map((e,i) => `
     <div class="ext-item"><button class="remove-btn" onclick="removeItem('extensions',${i})" title="Remove">&times;</button>
@@ -581,10 +806,9 @@ function renderExtensions() {
       </div></div>`).join('');
   return sec('grid','cyan','VS Code Extensions',`Extensions (${data.extensions.length})`,
     `<div class="ext-grid">${items}</div>`,
-    `<button class="add-btn" onclick="openModal('extension')">+ Add Extension</button>`);
+    `<button class="add-btn" onclick="openModal('extensionSearch')">+ Search Extensions</button>`, 'extensions');
 }
 
-// ---- Settings ----
 function renderSettings() {
   const rows = data.settings.map((s,i) => `
     <tr class="settings-row">
@@ -594,10 +818,9 @@ function renderSettings() {
     </tr>`).join('');
   return sec('settings','orange','VS Code Settings','Editor Settings',
     `<div class="card" style="padding:0;overflow:hidden;"><table class="settings-table"><thead><tr><th>Setting Key</th><th>Value</th><th style="width:30px"></th></tr></thead><tbody>${rows}</tbody></table></div>`,
-    `<button class="add-btn" onclick="openModal('setting')">+ Add Setting</button>`);
+    `<button class="add-btn" onclick="openModal('setting')">+ Add Setting</button>`, 'settings');
 }
 
-// ---- containerEnv ----
 function renderContainerEnv() {
   const rows = data.containerEnv.map((e,i) => `
     <div class="env-row"><span class="env-key">${e.key}</span>
@@ -605,10 +828,9 @@ function renderContainerEnv() {
       <button class="remove-btn-inline" onclick="removeItem('containerEnv',${i})" title="Remove">&times;</button></div>`).join('');
   return sec('env','pink','Container Environment','containerEnv - Set on container creation',
     `<div class="card">${rows||'<div class="no-options">None configured</div>'}</div>`,
-    `<button class="add-btn" onclick="openModal('containerEnv')">+ Add containerEnv</button>`);
+    `<button class="add-btn" onclick="openModal('containerEnv')">+ Add containerEnv</button>`, 'containerEnv');
 }
 
-// ---- remoteEnv ----
 function renderRemoteEnv() {
   const rows = data.remoteEnv.map((e,i) => `
     <div class="env-row"><span class="env-key">${e.key}</span>
@@ -616,27 +838,24 @@ function renderRemoteEnv() {
       <button class="remove-btn-inline" onclick="removeItem('remoteEnv',${i})" title="Remove">&times;</button></div>`).join('');
   return sec('env','orange','Remote Environment','remoteEnv - Set for tools/terminals',
     `<div class="card">${rows||'<div class="no-options">None configured</div>'}</div>`,
-    `<button class="add-btn" onclick="openModal('remoteEnv')">+ Add remoteEnv</button>`);
+    `<button class="add-btn" onclick="openModal('remoteEnv')">+ Add remoteEnv</button>`, 'remoteEnv');
 }
 
-// ---- User Config ----
 function renderUserConfig() {
   return sec('user','purple','User Configuration','remoteUser',`
     <div class="card">
-      <div class="kv-row"><span class="kv-key">remoteUser</span><span class="kv-value"><input class="input-field" data-input="remoteUser" value="${data.remoteUser}" placeholder="e.g., vscode" spellcheck="false"></span></div>
+      <div class="kv-row"><span class="kv-key">remoteUser${helpIcon('remoteUser')}</span><span class="kv-value"><input class="input-field" data-input="remoteUser" value="${data.remoteUser}" placeholder="e.g., vscode" spellcheck="false"></span></div>
     </div>`);
 }
 
-// ---- Ports ----
 function renderPorts() {
   const portChips = data.forwardPorts.map((p,i) => `<span class="chip">${p}<span class="chip-remove" onclick="removeChip('forwardPorts',${i})">&times;</span></span>`).join('');
   return sec('network','blue','Port Forwarding','forwardPorts',`
     <div class="card">
-      <div class="kv-row"><span class="kv-key">forwardPorts</span><span class="kv-value"><div class="chip-list">${portChips}<button class="chip-add" onclick="openModal('chipAdd','forwardPorts')">+ Add</button></div></span></div>
+      <div class="kv-row"><span class="kv-key">forwardPorts${helpIcon('forwardPorts')}</span><span class="kv-value"><div class="chip-list">${portChips}<button class="chip-add" onclick="openModal('chipAdd','forwardPorts')">+ Add</button></div></span></div>
     </div>`);
 }
 
-// ---- Mounts ----
 function renderMounts() {
   const items = data.mounts.map((m,i) => `
     <div class="mount-item"><button class="remove-btn" onclick="removeItem('mounts',${i})" title="Remove">&times;</button>
@@ -648,40 +867,87 @@ function renderMounts() {
       </div></div>`).join('');
   return sec('mount','red','Bind Mounts',`Mounts (${data.mounts.length})`,
     `<div class="mount-list">${items}</div>`,
-    `<button class="add-btn" onclick="openModal('mount')">+ Add Mount</button>`);
+    `<button class="add-btn" onclick="openModal('mount')">+ Add Mount</button>`, 'mounts');
+}
+
+function renderDockerfile() {
+  if (!dockerfileInfo?.dockerfileContent) return '';
+  return sec('docker','gray','Dockerfile','Build configuration',`
+    <div class="dockerfile-section">
+      <div class="dockerfile-header">
+        <div class="dockerfile-title">${ICONS.docker} Dockerfile detected</div>
+      </div>
+      <div class="dockerfile-content">${escapeHtml(dockerfileInfo.dockerfileContent)}</div>
+    </div>`);
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 // ===================== EVENT BINDING =====================
 function bindEvents() {
-  // contenteditable
   document.querySelectorAll('.editable').forEach(el => {
     el.addEventListener('blur', () => syncEditable(el));
   });
-  // textarea commands
   document.querySelectorAll('.command-editable').forEach(el => {
-    el.addEventListener('blur', () => { data[el.dataset.cmd] = el.value.trim(); showToast('Updated'); });
+    el.addEventListener('blur', () => { data[el.dataset.cmd] = el.value.trim(); onChange(); });
   });
-  // input fields
   document.querySelectorAll('[data-input]').forEach(el => {
-    el.addEventListener('blur', () => { data[el.dataset.input] = el.value.trim(); showToast('Updated'); });
+    el.addEventListener('blur', () => { data[el.dataset.input] = el.value.trim(); onChange(); });
   });
 }
 
 function syncEditable(el) {
   const text = el.textContent.trim();
   if (el.dataset.path) { data[el.dataset.path] = text; }
+  onChange();
+}
+
+function onChange() {
+  historyCount++;
+  updateUndoButton();
+  validateConfig();
   showToast('Updated');
 }
 
 // ===================== REMOVE =====================
-function removeItem(arr, i) { data[arr].splice(i,1); renderAll(); showToast('Removed'); }
-function removeChip(arr, i) { data[arr].splice(i,1); renderAll(); showToast('Removed'); }
+function removeItem(arr, i) { data[arr].splice(i,1); renderAll(); onChange(); }
+function removeChip(arr, i) { data[arr].splice(i,1); renderAll(); onChange(); }
 
 // ===================== MODAL =====================
 let currentModal = null, currentModalArg = null;
+let searchTimeout = null;
+
 function openModal(type, arg) {
   currentModal = type; currentModalArg = arg;
   const mc = document.getElementById('modalContent');
+
+  if (type === 'templates') {
+    mc.innerHTML = `<h3>Choose a Template</h3><p style="color:var(--text-muted);font-size:.85rem;margin-bottom:16px;">Start with a pre-configured devcontainer setup</p><div class="template-grid" id="templateGrid"><div class="search-loading">Loading templates...</div></div>`;
+    document.getElementById('modalOverlay').classList.add('show');
+    loadTemplates();
+    return;
+  }
+
+  if (type === 'featureSearch') {
+    mc.innerHTML = `<h3>Browse Features</h3>
+      <input type="text" class="search-input" id="featureSearchInput" placeholder="Search features (node, python, docker...)" oninput="searchFeatures(this.value)">
+      <div class="search-results" id="featureResults"><div class="search-loading">Loading popular features...</div></div>`;
+    document.getElementById('modalOverlay').classList.add('show');
+    loadPopularFeatures();
+    return;
+  }
+
+  if (type === 'extensionSearch') {
+    mc.innerHTML = `<h3>Find VS Code Extensions</h3>
+      <input type="text" class="search-input" id="extSearchInput" placeholder="Search extensions (eslint, prettier...)" oninput="searchExtensions(this.value)">
+      <div class="search-results" id="extResults"><div class="search-empty">Type to search VS Code marketplace</div></div>`;
+    document.getElementById('modalOverlay').classList.add('show');
+    setTimeout(() => document.getElementById('extSearchInput')?.focus(), 100);
+    return;
+  }
+
   const M = {
     feature: { title:'Add Feature', fields:[{l:'Source',id:'mf-source',p:'ghcr.io/owner/feature:version'},{l:'Name',id:'mf-name',p:'feature-name'}] },
     featureOption: { title:'Add Option', fields:[{l:'Key',id:'mf-optkey',p:'optionKey'},{l:'Value',id:'mf-optval',p:'value'}] },
@@ -697,8 +963,151 @@ function openModal(type, arg) {
   document.getElementById('modalOverlay').classList.add('show');
   setTimeout(()=>{const fi=mc.querySelector('input');if(fi)fi.focus();},100);
 }
+
 function closeModal() { document.getElementById('modalOverlay').classList.remove('show'); currentModal=null; }
 function gv(id) { const el=document.getElementById(id); return el?el.value.trim():''; }
+
+async function loadTemplates() {
+  try {
+    const res = await fetch('/api/templates');
+    const { templates } = await res.json();
+    const grid = document.getElementById('templateGrid');
+    grid.innerHTML = templates.map(t => `
+      <div class="template-card" onclick="applyTemplate('${t.id}')">
+        <div class="template-icon">${t.icon}</div>
+        <div class="template-name">${t.name}</div>
+        <div class="template-desc">${t.description}</div>
+      </div>
+    `).join('');
+  } catch (e) {
+    document.getElementById('templateGrid').innerHTML = '<div class="search-empty">Failed to load templates</div>';
+  }
+}
+
+async function applyTemplate(templateId) {
+  try {
+    const res = await fetch('/api/templates/apply', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ templateId })
+    });
+    const result = await res.json();
+    if (result.success) {
+      parseConfig(result.config);
+      renderAll();
+      validateConfig();
+      closeModal();
+      showToast('Template applied');
+    }
+  } catch (e) {
+    showToast('Failed to apply template', true);
+  }
+}
+
+async function loadPopularFeatures() {
+  try {
+    const res = await fetch('/api/features/popular');
+    const { features } = await res.json();
+    renderFeatureResults(features);
+  } catch (e) {
+    document.getElementById('featureResults').innerHTML = '<div class="search-empty">Failed to load features</div>';
+  }
+}
+
+async function searchFeatures(query) {
+  clearTimeout(searchTimeout);
+  if (!query) {
+    loadPopularFeatures();
+    return;
+  }
+  searchTimeout = setTimeout(async () => {
+    try {
+      const res = await fetch(`/api/features/search?q=${encodeURIComponent(query)}`);
+      const { features } = await res.json();
+      renderFeatureResults(features);
+    } catch (e) {
+      document.getElementById('featureResults').innerHTML = '<div class="search-empty">Search failed</div>';
+    }
+  }, 300);
+}
+
+function renderFeatureResults(features) {
+  const container = document.getElementById('featureResults');
+  if (features.length === 0) {
+    container.innerHTML = '<div class="search-empty">No features found</div>';
+    return;
+  }
+  container.innerHTML = features.map(f => `
+    <div class="search-result-item" onclick="addFeatureFromSearch('${f.id}', '${f.name}')">
+      <div class="search-result-icon">${f.name.substring(0,2).toUpperCase()}</div>
+      <div class="search-result-info">
+        <div class="search-result-name">${f.name}</div>
+        <div class="search-result-desc">${f.description}</div>
+        <div class="search-result-meta">${f.category || 'Feature'}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function addFeatureFromSearch(id, name) {
+  if (data.features.some(f => f.source === id)) {
+    showToast('Feature already added', true);
+    return;
+  }
+  data.features.push({ source: id, name, options: {} });
+  renderAll();
+  onChange();
+  showToast('Feature added: ' + name);
+}
+
+async function searchExtensions(query) {
+  clearTimeout(searchTimeout);
+  const container = document.getElementById('extResults');
+  if (query.length < 2) {
+    container.innerHTML = '<div class="search-empty">Type at least 2 characters to search</div>';
+    return;
+  }
+  container.innerHTML = '<div class="search-loading">Searching...</div>';
+  searchTimeout = setTimeout(async () => {
+    try {
+      const res = await fetch(`/api/extensions/search?q=${encodeURIComponent(query)}`);
+      const { extensions } = await res.json();
+      if (extensions.length === 0) {
+        container.innerHTML = '<div class="search-empty">No extensions found</div>';
+        return;
+      }
+      container.innerHTML = extensions.map(e => `
+        <div class="search-result-item" onclick="addExtensionFromSearch('${e.id}', '${e.name}')">
+          <div class="search-result-icon">${e.name.substring(0,2).toUpperCase()}</div>
+          <div class="search-result-info">
+            <div class="search-result-name">${e.name}</div>
+            <div class="search-result-desc">${e.description}</div>
+            <div class="search-result-meta">${e.publisher} • ${formatNumber(e.installs)} installs</div>
+          </div>
+        </div>
+      `).join('');
+    } catch (e) {
+      container.innerHTML = '<div class="search-empty">Search failed</div>';
+    }
+  }, 400);
+}
+
+function formatNumber(n) {
+  if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
+  if (n >= 1000) return (n/1000).toFixed(1) + 'K';
+  return n;
+}
+
+function addExtensionFromSearch(id, name) {
+  if (data.extensions.some(e => e.id === id)) {
+    showToast('Extension already added', true);
+    return;
+  }
+  data.extensions.push({ id, name, icon: name.substring(0,2).toUpperCase() });
+  renderAll();
+  onChange();
+  showToast('Extension added: ' + name);
+}
 
 function confirmModal() {
   switch(currentModal) {
@@ -711,7 +1120,7 @@ function confirmModal() {
     case 'mount': { const s=gv('mf-msrc'),t=gv('mf-mtgt'); if(!s||!t){showToast('Both paths required',true);return;} data.mounts.push({source:s,target:t,type:'bind',consistency:'cached'}); break; }
     case 'chipAdd': { const v=gv('mf-chip'); if(!v){showToast('Value is required',true);return;} const num = parseInt(v); data[currentModalArg].push(isNaN(num)?v:num); break; }
   }
-  closeModal(); renderAll(); showToast('Added');
+  closeModal(); renderAll(); onChange();
 }
 
 // ===================== EXPORT JSON =====================
@@ -727,7 +1136,6 @@ function buildJSON() {
   if (data.mounts.length) j.mounts = data.mounts.map(m => `source=${m.source},target=${m.target},type=${m.type},consistency=${m.consistency}`);
   if (data.postCreateCommand) j.postCreateCommand = data.postCreateCommand;
   if (data.postStartCommand) j.postStartCommand = data.postStartCommand;
-  // customizations
   const exts = data.extensions.map(e => e.id);
   const sObj = {};
   data.settings.forEach(s => {
@@ -755,8 +1163,8 @@ function toggleRaw() {
   const el = document.getElementById('rawJson');
   const btn = document.getElementById('rawToggle');
   const vis = el.classList.toggle('visible');
-  if (vis) { el.textContent = JSON.stringify(buildJSON(), null, 2); btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Hide JSON'; }
-  else { btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M4.72 3.22a.75.75 0 0 1 1.06 1.06L2.06 8l3.72 3.72a.75.75 0 1 1-1.06 1.06L.47 8.53a.75.75 0 0 1 0-1.06l4.25-4.25Zm6.56 0a.75.75 0 1 0-1.06 1.06L13.94 8l-3.72 3.72a.75.75 0 1 0 1.06 1.06l4.25-4.25a.75.75 0 0 0 0-1.06l-4.25-4.25Z"/></svg> Raw JSON'; }
+  if (vis) { el.textContent = JSON.stringify(buildJSON(), null, 2); btn.classList.add('active'); }
+  else { btn.classList.remove('active'); }
 }
 
 function showToast(msg, isErr) {
@@ -766,6 +1174,9 @@ function showToast(msg, isErr) {
 }
 
 // ===================== INIT =====================
+const savedTheme = localStorage.getItem('theme') || 'dark';
+document.documentElement.setAttribute('data-theme', savedTheme);
+updateThemeIcon();
 loadConfig();
 </script>
 </body>
